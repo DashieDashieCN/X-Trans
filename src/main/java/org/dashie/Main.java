@@ -20,7 +20,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  */
 @Log4j2
 public class Main {
-    public static final String VERSION = "V1.2.1";
+    public static final String VERSION = "V1.2.2";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
@@ -98,8 +98,11 @@ public class Main {
         System.out.println(getFixedLengthString("3. ", 5, ALIGN_RIGHT) + "循环模板设置");
         System.out.println(getFixedLengthString("", 5, ALIGN_RIGHT) + "类型：字符串（可多行）；选填；读取Excel数据并转换为文本时使用的模板，可使用特殊关键字");
         System.out.println(getFixedLengthString("关键字 {列号} ", 16, ALIGN_RIGHT) + "在大括号中填写从0开始计数的列号，对应每行对应列的单元格中的数据");
+        System.out.println(getFixedLengthString("关键字 ``` ", 16, ALIGN_RIGHT) + "标识循环模板的首尾，包裹循环模板");
         System.out.println(getFixedLengthString("4. ", 5, ALIGN_RIGHT) + "下文设置");
         System.out.println(getFixedLengthString("", 5, ALIGN_RIGHT) + "类型：字符串（可多行）；选填；在读取Excel数据并转换为文本之后写入的文本");
+        newLine();
+        System.out.println("输入e并按下回车回到主页");
         getCmd();
     }
 
