@@ -1,0 +1,47 @@
+startRowIndex=1
+outputFileName={}.ctd
+path=C:\Users\华硕\Desktop\file\工作簿1.xlsx
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+	<report>
+		<testNo>测试</testNo>
+		<testName>满深705-H14井单级中间浆大样测试</testName>
+		<testDate>45657.776594</testDate>
+		<alarmConsistometer>100.0</alarmConsistometer>
+		<experimentalist>主检人某某</experimentalist>
+		<custom1Consistometer>40.0</custom1Consistometer>
+		<custom2Consistometer>50.0</custom2Consistometer>
+		<custom3Consistometer>60.0</custom3Consistometer>
+		<custom4Consistometer>70.0</custom4Consistometer>
+		<startTemperature>20.9</startTemperature>
+		<startPressure>1.6</startPressure>
+		<startConsistometer>5.3</startConsistometer>
+		<endTemperature>0.0</endTemperature>
+		<endPressure>0.0</endPressure>
+		<scStartTime>15.0</scStartTime>
+		<scEndTime>30.0</scEndTime>
+		<consistometer30BcTime>0.156652</consistometer30BcTime>
+		<consistometerTime>0.000000</consistometerTime>
+		<custom1ConsistometerTime>0.158638</custom1ConsistometerTime>
+		<custom2ConsistometerTime>0.160020</custom2ConsistometerTime>
+		<custom3ConsistometerTime>0.161008</custom3ConsistometerTime>
+		<custom4ConsistometerTime>0.165397</custom4ConsistometerTime>
+		<testPF></testPF>
+		<testMemo></testMemo>
+		<alarmIsRecord>0</alarmIsRecord>
+		<thirtyBcIsRecord>1</thirtyBcIsRecord>
+		<custom1IsRecord>1</custom1IsRecord>
+		<custom2IsRecord>1</custom2IsRecord>
+		<custom3IsRecord>1</custom3IsRecord>
+		<custom4IsRecord>1</custom4IsRecord>
+	</report>
+	<datas>
+```
+		<data time="${30}$">
+			<t>${31}$</t>
+			<p>${32}$</p>
+			<c>${33}$</c>
+		</data>
+```
+	</datas>
+</files>
