@@ -20,7 +20,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  */
 @Log4j2
 public class Main {
-    public static final String VERSION = "V1.2.4";
+    public static final String VERSION = "V1.3.0";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
@@ -141,7 +141,7 @@ public class Main {
         }
     }
 
-    public static void dirCheck() throws InterruptedException {
+    public static void dirCheck() throws InterruptedException, IOException {
         info("正在检查文件完整性");
         File file = new File(TEMPLATE_DIR_PATH);
         if (file.exists()) {
@@ -152,6 +152,18 @@ public class Main {
                 success("模板目录创建成功");
             } else {
                 error("模板目录创建失败！");
+                shutdown();
+            }
+        }
+        file = new File(TEMPLATE_PATH);
+        if (file.exists()) {
+            info("模板文件存在");
+        } else {
+            info("模板文件缺失，自动创建");
+            if (file.createNewFile()) {
+                success("模板文件创建成功");
+            } else {
+                error("模板文件创建失败！");
                 shutdown();
             }
         }
