@@ -106,6 +106,7 @@ public class ExcelUtil {
             }
             info("读取Excel第" + (rowIndex + 1) + "行");
             printProgressBar(25, (double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
+            printFixedLengthString(String.format("(%d/%d)", (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep(), steps), 25, ALIGN_RIGHT);
             try {
                 bufferedWriter.newLine();
                 bufferedWriter.write(templateObject.getFilledLoopTemplate(data));

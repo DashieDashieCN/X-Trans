@@ -7,6 +7,7 @@ import java.io.File;
  * @since 2025/1/14 10:48
  */
 public class FileCommon {
+    public static final String TEMPLATE_DIR_PATH = System.getProperty("user.dir") + File.separator + "setting";
     public static final String TEMPLATE_PATH = System.getProperty("user.dir") + File.separator + "setting" + File.separator + "template.txt";
     public static final String OUTPUT_PATH = System.getProperty("user.dir") + File.separator + "output";
 
