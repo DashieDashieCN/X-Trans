@@ -41,7 +41,9 @@ public class ExcelUtil {
             info("共" + totalRows + 1 + "行");
             BufferedWriter bufferedWriter = getWriter(templateObject);
             info("正在写入上文");
-            bufferedWriter.write(templateObject.getPreText());
+            if (!templateObject.getPreText().isEmpty()) {
+                bufferedWriter.write(templateObject.getPreText());
+            }
             success("上文写入成功");
             info("正在写入循环模板");
             SheetListener sheetListener = new SheetListener(
@@ -50,8 +52,14 @@ public class ExcelUtil {
                     (totalRows - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep()
             );
             EasyExcel.read(path, sheetListener).sheet().doRead();
-            bufferedWriter.newLine();
-            bufferedWriter.write(templateObject.getSufText());
+            info("正在写入下文");
+            if (!templateObject.getSufText().isEmpty()) {
+                if (!templateObject.getPreText().isEmpty() || !templateObject.getLoopTemplate().isEmpty()) {
+                    bufferedWriter.newLine();
+                }
+                bufferedWriter.write(templateObject.getSufText());
+            }
+            success("下文写入成功");
             bufferedWriter.close();
         }
     }
@@ -117,18 +125,22 @@ public class ExcelUtil {
                 BigDecimal bigDecimal = new BigDecimal((double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
                 printFixedLengthString(bigDecimal.setScale(2, RoundingMode.HALF_UP) + "%", 25, ALIGN_RIGHT);
             }
-            try {
-                bufferedWriter.newLine();
-                bufferedWriter.write(templateObject.getFilledLoopTemplate(data));
-                if (updateFlag) {
-                    success("写入成功", PRINT_STYLE_HIDE_DATE);
-                }
-            } catch (IOException e) {
-                if (updateFlag) {
-                    error("写入失败！", PRINT_STYLE_HIDE_DATE);
-                } else {
-                    newLine();
-                    error("写入失败！");
+            if (!templateObject.getLoopTemplate().isEmpty()) {
+                try {
+                    if (!templateObject.getPreText().isEmpty() || rowIndex != templateObject.getStartRowIndex()) {
+                        bufferedWriter.newLine();
+                    }
+                    bufferedWriter.write(templateObject.getFilledLoopTemplate(data));
+                    if (updateFlag) {
+                        success("写入成功", PRINT_STYLE_HIDE_DATE);
+                    }
+                } catch (IOException e) {
+                    if (updateFlag) {
+                        error("写入失败！", PRINT_STYLE_HIDE_DATE);
+                    } else {
+                        newLine();
+                        error("写入失败！");
+                    }
                 }
             }
         }

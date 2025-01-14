@@ -20,7 +20,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  */
 @Log4j2
 public class Main {
-    public static final String VERSION = "V1.3.0";
+    public static final String VERSION = "V1.3.1";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
