@@ -252,19 +252,19 @@ public class ScreenPrintUtil {
     }
 
     public static void warn(String info) {
-        printSystemInfo(SUCCESS, info, PRINT_STYLE_NORMAL);
+        printSystemInfo(WARN, info, PRINT_STYLE_NORMAL);
     }
 
     public static void warn(String info, int style) {
-        printSystemInfo(SUCCESS, info, style);
+        printSystemInfo(WARN, info, style);
     }
 
     public static void error(String info) {
-        printSystemInfo(SUCCESS, info, STYLE_NORMAL);
+        printSystemInfo(ERROR, info, STYLE_NORMAL);
     }
 
     public static void error(String info, int style) {
-        printSystemInfo(SUCCESS, info, style);
+        printSystemInfo(ERROR, info, style);
     }
 
     public static void printSystemInfo(String prefix, String info, int style) {

@@ -20,7 +20,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  */
 @Log4j2
 public class Main {
-    public static final String VERSION = "V1.1.0";
+    public static final String VERSION = "V1.2.0";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
@@ -174,8 +174,13 @@ public class Main {
     }
 
     public static void main(String[] args) throws InterruptedException, IOException {
-        init();
-        home();
+        try {
+            init();
+            home();
+        } catch (Exception e) {
+            error(e.toString());
+        }
+        getCmd();
     }
 
     public static void home() throws IOException, InterruptedException {
@@ -234,7 +239,7 @@ public class Main {
         File file = new File(filePath);
         templateObject.setFileName(file.getName().substring(0, file.getName().lastIndexOf('.')));
         cmdCls();
-        info("正在读取Excel文件");
+        info("正在读取Excel文件：" + filePath);
         ExcelUtil.readExcel(filePath, templateObject);
         cmdCls();
         success("成功转换为：" + TextUtil.getOutputPath(templateObject));

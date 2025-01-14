@@ -17,6 +17,9 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.dashie.entity.TemplateObject;
 
 import java.io.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.util.Date;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -61,6 +64,8 @@ public class ExcelUtil {
     @AllArgsConstructor
     @NoArgsConstructor
     public static class SheetListener extends AnalysisEventListener<Map<Integer, String>> {
+        public static Long time = null;
+
         TemplateObject templateObject;
         BufferedWriter bufferedWriter;
         int steps;
@@ -100,20 +105,45 @@ public class ExcelUtil {
          * 加上存储数据库
          */
         private void saveData(Map<Integer, String> data, int rowIndex) {
-            try {
-                cmdCls();
-            } catch (Exception ignored) {
+            boolean updateFlag = checkTime();
+            if (updateFlag) {
+                try {
+                    cmdCls();
+                } catch (Exception ignored) {
+                }
+
+                info("读取Excel中...");
+                printProgressBar(25, (double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
+                BigDecimal bigDecimal = new BigDecimal((double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
+                printFixedLengthString(bigDecimal.setScale(2, RoundingMode.HALF_UP) + "%", 25, ALIGN_RIGHT);
             }
-            info("读取Excel第" + (rowIndex + 1) + "行");
-            printProgressBar(25, (double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
-            printFixedLengthString(String.format("(%d/%d)", (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep(), steps), 25, ALIGN_RIGHT);
             try {
                 bufferedWriter.newLine();
                 bufferedWriter.write(templateObject.getFilledLoopTemplate(data));
-                success("写入成功", PRINT_STYLE_HIDE_DATE);
+                if (updateFlag) {
+                    success("写入成功", PRINT_STYLE_HIDE_DATE);
+                }
             } catch (IOException e) {
-                error("写入失败！", PRINT_STYLE_HIDE_DATE);
+                if (updateFlag) {
+                    error("写入失败！", PRINT_STYLE_HIDE_DATE);
+                } else {
+                    newLine();
+                    error("写入失败！");
+                }
             }
+        }
+
+        private boolean checkTime() {
+            Long date = System.currentTimeMillis();
+            if (time == null) {
+                time = date;
+                return true;
+            }
+            if (date - time >= 50) {
+                time = date;
+                return true;
+            }
+            return false;
         }
     }
 }
