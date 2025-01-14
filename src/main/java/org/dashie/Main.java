@@ -20,7 +20,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  */
 @Log4j2
 public class Main {
-    public static final String VERSION = "V1.2.2";
+    public static final String VERSION = "V1.2.3";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
@@ -83,13 +83,13 @@ public class Main {
         System.out.println(getFixedLengthString("1.1 ", 5, ALIGN_RIGHT) + "起始行号 startRowIndex=XXX");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：大于等于0的正整数；非必填，默认值：1");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "行号自0开始计数；限制Excel读取数据时的起始行号");
-        System.out.println(getFixedLengthString("1.1 ", 5, ALIGN_RIGHT) + "行读取步长 rowStep=XXX");
+        System.out.println(getFixedLengthString("1.2 ", 5, ALIGN_RIGHT) + "行读取步长 rowStep=XXX");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：大于等于1的正整数；非必填，默认值：1");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "Excel读取数据时下一读取行到当前读取行之间的步长");
-        System.out.println(getFixedLengthString("1.1 ", 5, ALIGN_RIGHT) + "Excel路径 path=XXX");
+        System.out.println(getFixedLengthString("1.3 ", 5, ALIGN_RIGHT) + "Excel路径 path=XXX");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：字符串；非必填，缺失时需要用户手动输入");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "读取的Excel路径，所在文件夹路径+文件名+后缀名");
-        System.out.println(getFixedLengthString("1.1 ", 5, ALIGN_RIGHT) + "输出文件名 outputFileName=XXX");
+        System.out.println(getFixedLengthString("1.4 ", 5, ALIGN_RIGHT) + "输出文件名 outputFileName=XXX");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：字符串；非必填，默认值：{}.txt");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "Excel转换后的输出文件名，文件名+后缀名，可使用特殊关键字");
         System.out.println(getFixedLengthString("关键字 {} ", 16, ALIGN_RIGHT) + "复用Excel文件名（不包含后缀名）");
@@ -98,7 +98,7 @@ public class Main {
         System.out.println(getFixedLengthString("3. ", 5, ALIGN_RIGHT) + "循环模板设置");
         System.out.println(getFixedLengthString("", 5, ALIGN_RIGHT) + "类型：字符串（可多行）；选填；读取Excel数据并转换为文本时使用的模板，可使用特殊关键字");
         System.out.println(getFixedLengthString("关键字 {列号} ", 16, ALIGN_RIGHT) + "在大括号中填写从0开始计数的列号，对应每行对应列的单元格中的数据");
-        System.out.println(getFixedLengthString("关键字 ``` ", 16, ALIGN_RIGHT) + "标识循环模板的首尾，包裹循环模板");
+        System.out.println(getFixedLengthString("   关键字 ``` ", 16, ALIGN_RIGHT) + "标识循环模板的首尾，包裹循环模板");
         System.out.println(getFixedLengthString("4. ", 5, ALIGN_RIGHT) + "下文设置");
         System.out.println(getFixedLengthString("", 5, ALIGN_RIGHT) + "类型：字符串（可多行）；选填；在读取Excel数据并转换为文本之后写入的文本");
         newLine();
