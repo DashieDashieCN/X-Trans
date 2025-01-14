@@ -20,7 +20,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  */
 @Log4j2
 public class Main {
-    public static final String VERSION = "V1.2.0";
+    public static final String VERSION = "V1.2.1";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
@@ -201,7 +201,6 @@ public class Main {
     public static void init() throws IOException, InterruptedException {
         cmdCls();
         printTitle();
-        Thread.sleep(1000);
         dirCheck();
     }
 
