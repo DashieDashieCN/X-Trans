@@ -123,7 +123,7 @@ public class ExcelUtil {
                 info("读取Excel中...");
                 printProgressBar(25, (double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
                 BigDecimal bigDecimal = new BigDecimal((double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
-                printFixedLengthString(bigDecimal.setScale(2, RoundingMode.HALF_UP) + "%", 25, ALIGN_RIGHT);
+                printFixedLengthString(bigDecimal.setScale(2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)) + "%", 25, ALIGN_RIGHT);
             }
             if (!templateObject.getLoopTemplate().isEmpty()) {
                 try {

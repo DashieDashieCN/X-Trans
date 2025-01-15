@@ -13,10 +13,6 @@ import static org.dashie.utils.print.ScreenPrintUtil.warn;
  * @since 2025/1/14 9:39
  */
 public class TextUtil {
-    public static void templateLoopWrite(TemplateObject templateObject) {
-
-    }
-
     public static TemplateObject readTemplate(String path) throws IOException {
         TemplateObject templateObject = new TemplateObject().checkAndFix();
         File file = new File(path);

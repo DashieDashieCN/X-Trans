@@ -8,6 +8,7 @@ import org.dashie.utils.text.TextUtil;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Scanner;
 
 import static org.dashie.common.FileCommon.*;
@@ -17,13 +18,12 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  * @author DashieDasie
  * @since 2025/1/14 9:34
  */
-@Log4j2
 public class Main {
-    public static final String VERSION = "V1.3.3";
+    public static final String VERSION = "V1.4.0";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
-    public static final Scanner scanner = new Scanner(System.in);
+    public static final Scanner scanner = new Scanner(System.in, "GBK");
 
     /**
      * 输出标题
@@ -269,7 +269,8 @@ public class Main {
         }
         if (templateObject.isEmpty()) {
             error("模板文件正文为空，请确认！");
-            shutdown();
+            info("程序执行结束");
+            getCmd();
         } else {
             success("模板文件读取成功！");
         }
