@@ -28,7 +28,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  * @since 2025/1/14 9:34
  */
 public class Main {
-    public static final String VERSION = "V1.4.4";
+    public static final String VERSION = "V1.4.5";
 
     public static final Scanner scanner = new Scanner(System.in, "GBK");
 
