@@ -8,7 +8,6 @@ import org.dashie.utils.text.TextUtil;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Objects;
 import java.util.Scanner;
 
 import static org.dashie.common.FileCommon.*;
@@ -20,7 +19,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  */
 @Log4j2
 public class Main {
-    public static final String VERSION = "V1.3.2";
+    public static final String VERSION = "V1.3.3";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
@@ -47,6 +46,9 @@ public class Main {
                 "                                                 " + VERSION);
     }
 
+    /**
+     * 输出指南
+     */
     public static void printGuide() {
         newLine();
         System.out.println("操作指南：");
@@ -56,7 +58,10 @@ public class Main {
         System.out.println(getFixedLengthString("3. ", 5, ALIGN_RIGHT) + "输入h并按下回车查看全部指令");
     }
 
-    public static void printHelp() throws IOException, InterruptedException {
+    /**
+     * 输出指令帮助
+     */
+    public static void printHelp() {
         cmdCls();
         newLine();
         System.out.println("指令帮助：");
@@ -72,7 +77,10 @@ public class Main {
         getCmd();
     }
 
-    public static void templateHelp() throws IOException, InterruptedException {
+    /**
+     * 输出模板帮助
+     */
+    public static void templateHelp() {
         cmdCls();
         newLine();
         System.out.println("模板配置帮助：");
@@ -106,42 +114,59 @@ public class Main {
         getCmd();
     }
 
-    public static void getCmd() throws IOException, InterruptedException {
+    /**
+     * 循环等待用户输入指令
+     */
+    @SuppressWarnings("InfiniteLoopStatement")
+    public static void getCmd() {
         while (true) {
             String s = scanner.nextLine();
             analyseCode(s);
         }
     }
 
-    public static void analyseCode(String code) throws IOException, InterruptedException {
-        switch (code) {
-            case "h":
-                printHelp();
-                break;
-            case "o":
-                desktop.open(new File(TEMPLATE_DIR_PATH));
-                break;
-            case "f":
-                desktop.open(new File(TEMPLATE_PATH));
-                break;
-            case "p":
-                desktop.open(new File(OUTPUT_PATH));
-                break;
-            case "i":
-                templateHelp();
-                break;
-            case "q":
-                shutdown();
-                break;
-            case "r":
-                init();
-            case "e":
-                home();
-                break;
+    /**
+     * 分析指令代码
+     * @param code 指令代码
+     */
+    public static void analyseCode(String code) {
+        try {
+            switch (code) {
+                case "h":
+                    printHelp();
+                    break;
+                case "o":
+                    desktop.open(new File(TEMPLATE_DIR_PATH));
+                    break;
+                case "f":
+                    desktop.open(new File(TEMPLATE_PATH));
+                    break;
+                case "p":
+                    desktop.open(new File(OUTPUT_PATH));
+                    break;
+                case "i":
+                    templateHelp();
+                    break;
+                case "q":
+                    shutdown();
+                    break;
+                case "r":
+                    init();
+                case "e":
+                    home();
+                    break;
+            }
+        } catch (Exception e) {
+            error("指令分析异常");
+            getCmd();
         }
     }
 
-    public static void dirCheck() throws InterruptedException, IOException {
+    /**
+     * 检查文件完整性
+     * @throws IOException createNewFile()异常
+     */
+    public static void fileCheck() throws IOException {
         info("正在检查文件完整性");
         File file = new File(TEMPLATE_DIR_PATH);
         if (file.exists()) {
@@ -182,23 +207,21 @@ public class Main {
         success("文件完整性校验完成");
     }
 
-    public static void shutdown() throws InterruptedException {
-        info("程序将在1秒后退出");
-        Thread.sleep(1000);
-        System.exit(0);
-    }
-
-    public static void main(String[] args) throws InterruptedException, IOException {
+    /**
+     * 中止程序
+     */
+    public static void shutdown() {
         try {
-            init();
-            home();
-        } catch (Exception e) {
-            error(e.toString());
-        }
-        getCmd();
+            info("程序将在1秒后退出");
+            Thread.sleep(1000);
+            System.exit(0);
+        } catch (Exception ignored) {}
     }
 
-    public static void home() throws IOException, InterruptedException {
+    /**
+     * 程序主页
+     */
+    public static void home() {
         cmdCls();
         printTitle();
         printGuide();
@@ -213,20 +236,28 @@ public class Main {
         start();
     }
 
-    public static void init() throws IOException, InterruptedException {
+    /**
+     * 程序初始化
+     */
+    public static void init() {
         cmdCls();
         printTitle();
-        dirCheck();
+        try {
+            fileCheck();
+        } catch (Exception e) {
+            error("初始化出错，文件完整性校验过程中创建缺失文件失败：" + e);
+            info("请手动创建后按下r并回车重启程序，或下载最新版本的应用");
+            getCmd();
+        }
     }
 
-    public static void start() throws IOException, InterruptedException {
-        String filePath = null;
+    /**
+     * 开始执行
+     */
+    @SuppressWarnings("InfiniteLoopStatement")
+    public static void start() {
+        String filePath;
         String templatePath = TEMPLATE_PATH;
-//        System.out.println(templateObject);
-//        System.out.println("请输入Excel文件路径后按下回车");
-//        System.out.print("path=");
-//        Scanner scanner = new Scanner(System.in);
-//        String filePath = scanner.nextLine();
         TemplateObject templateObject;
         info("正在读取模板文件：" + templatePath);
         try {
@@ -254,13 +285,20 @@ public class Main {
         templateObject.setFileName(file.getName().substring(0, file.getName().lastIndexOf('.')));
         cmdCls();
         info("正在读取Excel文件：" + filePath);
-        ExcelUtil.readExcel(filePath, templateObject);
-        cmdCls();
-        success("成功转换为：" + TextUtil.getOutputPath(templateObject));
-        info("1秒后将打开输出文件夹");
-        Thread.sleep(1000);
-        Desktop desktop = Desktop.getDesktop();
-        desktop.open(new File(OUTPUT_PATH));
+        try {
+            ExcelUtil.readExcel(filePath, templateObject);
+            cmdCls();
+            success("成功转换为：" + TextUtil.getOutputPath(templateObject));
+            info("1秒后将打开输出文件夹");
+            try {
+                Thread.sleep(1000);
+            } catch (Exception ignored) {
+            }
+            Desktop desktop = Desktop.getDesktop();
+            desktop.open(new File(OUTPUT_PATH));
+        } catch (IOException e) {
+            error("Excel处理出错：" + e);
+        }
         System.out.println("输入e并按下回车回到主页\n输入q并按下回车退出程序\n输入s并按下回车重新执行程序");
         while (true) {
             String s = scanner.nextLine();
@@ -270,5 +308,15 @@ public class Main {
                 analyseCode(s);
             }
         }
+    }
+
+    public static void main(String[] args) {
+        try {
+            init();
+            home();
+        } catch (Exception e) {
+            error(e.toString());
+        }
+        getCmd();
     }
 }

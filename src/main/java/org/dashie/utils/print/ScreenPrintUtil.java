@@ -120,11 +120,11 @@ public class ScreenPrintUtil {
 
     /**
      * cmd清空命令
-     * @throws IOException start()导致的异常
-     * @throws InterruptedException waitFor()导致的异常
      */
-    public static void cmdCls() throws IOException, InterruptedException {
-        new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+    public static void cmdCls() {
+        try {
+            new ProcessBuilder("cmd", "/c", "cls").inheritIO().start().waitFor();
+        } catch (Exception ignored) {}
     }
 
     /**
