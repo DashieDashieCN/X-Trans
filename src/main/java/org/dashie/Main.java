@@ -28,7 +28,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  * @since 2025/1/14 9:34
  */
 public class Main {
-    public static final String VERSION = "V1.4.3";
+    public static final String VERSION = "V1.4.4";
 
     public static final Scanner scanner = new Scanner(System.in, "GBK");
 
@@ -362,7 +362,7 @@ public class Main {
                 }
             }
             Controller.writeMessage("文件完整性校验完成");
-            Thread.sleep(500);
+            Thread.sleep(200);
             Controller.hide();
         } catch (Controller.ConnectionException ignored) {
             try {
