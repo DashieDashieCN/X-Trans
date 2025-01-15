@@ -11,6 +11,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.Sheet;
 import org.apache.poi.ss.usermodel.Workbook;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -35,7 +36,8 @@ import static org.dashie.utils.text.TextUtil.getWriter;
 public class ExcelUtil {
     public static void readExcel(String path, TemplateObject templateObject) throws IOException {
         try (FileInputStream file = new FileInputStream(path)) {
-            Workbook workbook = new XSSFWorkbook(file);
+            boolean is2003Excel= path.toLowerCase().endsWith("xls");
+            Workbook workbook = is2003Excel ? new HSSFWorkbook(file) : new XSSFWorkbook(file);
             Sheet sheet = workbook.getSheetAt(0);
             int totalRows = sheet.getLastRowNum();
             info("共" + totalRows + 1 + "行");

@@ -1,6 +1,6 @@
 package org.dashie;
 
-import lombok.extern.log4j.Log4j2;
+import org.apache.poi.poifs.filesystem.NotOLE2FileException;
 import org.dashie.entity.TemplateObject;
 import org.dashie.utils.excel.ExcelUtil;
 import org.dashie.utils.text.TextUtil;
@@ -8,7 +8,6 @@ import org.dashie.utils.text.TextUtil;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.Scanner;
 
 import static org.dashie.common.FileCommon.*;
@@ -19,7 +18,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  * @since 2025/1/14 9:34
  */
 public class Main {
-    public static final String VERSION = "V1.4.0";
+    public static final String VERSION = "V1.4.1";
 
     public static final Desktop desktop = Desktop.getDesktop();
 
@@ -53,9 +52,10 @@ public class Main {
         newLine();
         System.out.println("操作指南：");
         newLine();
-        System.out.println(getFixedLengthString("1. ", 5, ALIGN_RIGHT) + "配置setting目录下的template.txt文件");
-        System.out.println(getFixedLengthString("2. ", 5, ALIGN_RIGHT) + "输入s并按下回车开始执行转换程序");
-        System.out.println(getFixedLengthString("3. ", 5, ALIGN_RIGHT) + "输入h并按下回车查看全部指令");
+        System.out.println(getFixedLengthString("1. ", 5, ALIGN_RIGHT) + "xls文件需要先转换为xlsx格式");
+        System.out.println(getFixedLengthString("2. ", 5, ALIGN_RIGHT) + "配置setting目录下的template.txt文件");
+        System.out.println(getFixedLengthString("3. ", 5, ALIGN_RIGHT) + "输入s并按下回车开始执行转换程序");
+        System.out.println(getFixedLengthString("4. ", 5, ALIGN_RIGHT) + "输入h并按下回车查看全部指令");
     }
 
     /**
@@ -297,6 +297,8 @@ public class Main {
             }
             Desktop desktop = Desktop.getDesktop();
             desktop.open(new File(OUTPUT_PATH));
+        } catch (NotOLE2FileException e) {
+            error("文件格式错误，系统无法读取 Office 2003 XML (xls) 等格式的文件，请将文件转化为xlsx后重试");
         } catch (IOException e) {
             error("Excel处理出错：" + e);
         }
