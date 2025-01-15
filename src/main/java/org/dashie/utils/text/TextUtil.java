@@ -5,8 +5,7 @@ import org.dashie.entity.TemplateObject;
 import java.io.*;
 
 import static org.dashie.common.FileCommon.*;
-import static org.dashie.utils.print.ScreenPrintUtil.info;
-import static org.dashie.utils.print.ScreenPrintUtil.warn;
+import static org.dashie.utils.print.ScreenPrintUtil.*;
 
 /**
  * @author DashieDasie
@@ -16,7 +15,6 @@ public class TextUtil {
     public static TemplateObject readTemplate(String path) throws IOException {
         TemplateObject templateObject = new TemplateObject().checkAndFix();
         File file = new File(path);
-        templateObject.setFileName(file.getName().substring(0, file.getName().lastIndexOf('.')));
         boolean settingEnd = false;
         int textLocation = 0;
         FileInputStream inputStream = new FileInputStream(file);
@@ -50,6 +48,13 @@ public class TextUtil {
                     case KEY_INPUT_FILE_PATH:
                         info("读取模板配置：Excel路径=" + value);
                         templateObject.setInputFilePath(value);
+                        try {
+                            File excel = new File(value);
+                            templateObject.setFileName(excel.getName().substring(0, excel.getName().lastIndexOf('.')));
+                        } catch (Exception e) {
+                            error("无法根据路径查找到对应Excel文件，需用户手动输入");
+                            templateObject.setInputFilePath(null);
+                        }
                         break;
                     default:
                         warn("未知配置，结束读取模板配置：" + line);

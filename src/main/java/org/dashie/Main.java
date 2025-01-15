@@ -1,6 +1,7 @@
 package org.dashie;
 
 import org.apache.poi.poifs.filesystem.NotOLE2FileException;
+import org.dashie.common.CommandEnum;
 import org.dashie.entity.TemplateObject;
 import org.dashie.utils.excel.ExcelUtil;
 import org.dashie.utils.text.TextUtil;
@@ -8,9 +9,18 @@ import org.dashie.utils.text.TextUtil;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.Scanner;
+import java.util.Set;
 
+import com.exe4j.Controller;
+
+import static org.dashie.common.CommandCommon.STRATEGY_AVOID;
+import static org.dashie.common.CommandCommon.STRATEGY_CONTAINS;
+import static org.dashie.common.CommandEnum.*;
 import static org.dashie.common.FileCommon.*;
+import static org.dashie.utils.file.FileUtil.openFile;
 import static org.dashie.utils.print.ScreenPrintUtil.*;
 
 /**
@@ -18,9 +28,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  * @since 2025/1/14 9:34
  */
 public class Main {
-    public static final String VERSION = "V1.4.1";
-
-    public static final Desktop desktop = Desktop.getDesktop();
+    public static final String VERSION = "V1.4.2";
 
     public static final Scanner scanner = new Scanner(System.in, "GBK");
 
@@ -66,14 +74,9 @@ public class Main {
         newLine();
         System.out.println("指令帮助：");
         newLine();
-        System.out.println(getFixedLengthString("h", 5, ALIGN_RIGHT) + " " + "查看指令帮助");
-        System.out.println(getFixedLengthString("o", 5, ALIGN_RIGHT) + " " + "打开模板文件（template.txt）所在文件夹");
-        System.out.println(getFixedLengthString("f", 5, ALIGN_RIGHT) + " " + "打开模板文件（template.txt）");
-        System.out.println(getFixedLengthString("p", 5, ALIGN_RIGHT) + " " + "打开输出文件夹");
-        System.out.println(getFixedLengthString("i", 5, ALIGN_RIGHT) + " " + "查看模板配置说明");
-        System.out.println(getFixedLengthString("q", 5, ALIGN_RIGHT) + " " + "退出程序");
-        System.out.println(getFixedLengthString("r", 5, ALIGN_RIGHT) + " " + "重启程序");
-        System.out.println(getFixedLengthString("e", 5, ALIGN_RIGHT) + " " + "返回主页");
+        for (CommandEnum command : CommandEnum.values()) {
+            System.out.println(getFixedLengthString(command.getCode(), 5, ALIGN_RIGHT) + " " + command.getDesc());
+        }
         getCmd();
     }
 
@@ -100,28 +103,70 @@ public class Main {
         System.out.println(getFixedLengthString("1.4 ", 5, ALIGN_RIGHT) + "输出文件名 outputFileName=XXX");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：字符串；非必填，默认值：{}.txt");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "Excel转换后的输出文件名，文件名+后缀名，可使用特殊关键字");
-        System.out.println(getFixedLengthString("关键字 {} ", 16, ALIGN_RIGHT) + "复用Excel文件名（不包含后缀名）");
+        System.out.println("         关键字 {} 复用Excel文件名（不包含后缀名）");
         System.out.println(getFixedLengthString("2. ", 5, ALIGN_RIGHT) + "上文设置");
         System.out.println(getFixedLengthString("", 5, ALIGN_RIGHT) + "类型：字符串（可多行）；选填；在读取Excel数据并转换为文本之前写入的文本");
         System.out.println(getFixedLengthString("3. ", 5, ALIGN_RIGHT) + "循环模板设置");
         System.out.println(getFixedLengthString("", 5, ALIGN_RIGHT) + "类型：字符串（可多行）；选填；读取Excel数据并转换为文本时使用的模板，可使用特殊关键字");
-        System.out.println(getFixedLengthString("关键字 ${列号}$ ", 16, ALIGN_RIGHT) + "在大括号中填写从0开始计数的列号，对应每行对应列的单元格中的数据");
-        System.out.println(getFixedLengthString("  关键字 ```    ", 16, ALIGN_RIGHT) + "标识循环模板的首尾，包裹循环模板");
+        System.out.println("         关键字 ${列号}$ 在大括号中填写从0开始计数的列号，对应每行对应列的单元格中的数据");
+        System.out.println("         关键字 ``` 标识循环模板的首尾，包裹循环模板");
         System.out.println(getFixedLengthString("4. ", 5, ALIGN_RIGHT) + "下文设置");
         System.out.println(getFixedLengthString("", 5, ALIGN_RIGHT) + "类型：字符串（可多行）；选填；在读取Excel数据并转换为文本之后写入的文本");
         newLine();
-        System.out.println("输入e并按下回车回到主页");
+        printCommandTip(E);
         getCmd();
     }
 
     /**
      * 循环等待用户输入指令
      */
-    @SuppressWarnings("InfiniteLoopStatement")
     public static void getCmd() {
+        getCmd(new String[]{});
+    }
+
+    /**
+     * 循环等待用户输入指令
+     * @param dict 限定生效指令
+     */
+    public static void getCmd(CommandEnum[] dict) {
+        getCmd(dict, STRATEGY_CONTAINS);
+    }
+
+    /**
+     * 循环等待用户输入指令
+     * @param dict 限定生效指令
+     */
+    public static void getCmd(String[] dict) {
+        getCmd(dict, STRATEGY_CONTAINS);
+    }
+
+    /**
+     * 循环等待用户输入指令
+     * @param dict 限定生效指令
+     * @param strategy 字典策略
+     */
+    @SuppressWarnings("InfiniteLoopStatement")
+    public static void getCmd(CommandEnum[] dict, int strategy) {
+        newLine();
         while (true) {
+            System.out.print("> ");
             String s = scanner.nextLine();
-            analyseCode(s);
+            analyseCode(s, (String[]) Arrays.stream(dict).map(CommandEnum::getCode).toArray(), strategy);
+        }
+    }
+
+    /**
+     * 循环等待用户输入指令
+     * @param dict 限定生效指令
+     * @param strategy 字典策略
+     */
+    @SuppressWarnings("InfiniteLoopStatement")
+    public static void getCmd(String[] dict, int strategy) {
+        newLine();
+        while (true) {
+            System.out.print("> ");
+            String s = scanner.nextLine();
+            analyseCode(s, dict, strategy);
         }
     }
 
@@ -130,35 +175,64 @@ public class Main {
      * @param code 指令代码
      */
     public static void analyseCode(String code) {
-        try {
-            switch (code) {
-                case "h":
-                    printHelp();
-                    break;
-                case "o":
-                    desktop.open(new File(TEMPLATE_DIR_PATH));
-                    break;
-                case "f":
-                    desktop.open(new File(TEMPLATE_PATH));
-                    break;
-                case "p":
-                    desktop.open(new File(OUTPUT_PATH));
-                    break;
-                case "i":
-                    templateHelp();
-                    break;
-                case "q":
-                    shutdown();
-                    break;
-                case "r":
-                    init();
-                case "e":
-                    home();
-                    break;
+        analyseCode(code, new String[]{}, STRATEGY_CONTAINS);
+    }
+
+    /**
+     * 分析指令代码
+     * @param code 指令代码
+     * @param dict 限定生效指令
+     * @param strategy 字典策略
+     */
+    public static void analyseCode(String code, String[] dict, int strategy) {
+        boolean legalCommand = false;
+        Set<String> set = new HashSet<>(Arrays.asList(dict));
+        if (strategy == STRATEGY_CONTAINS) {
+            legalCommand = dict.length == 0 || set.isEmpty() || set.contains(code);
+        } else if (strategy == STRATEGY_AVOID) {
+            legalCommand = dict.length == 0 || set.isEmpty() || !set.contains(code);
+        }
+        if (legalCommand) {
+            CommandEnum command = getCommandByCode(code);
+            if (command == null) {
+                System.out.println("- 指令不存在");
+            } else {
+                switch (command) {
+                    case H:
+                        printHelp();
+                        break;
+                    case O:
+                        openFile(TEMPLATE_DIR_PATH);
+                        break;
+                    case F:
+                        openFile(TEMPLATE_PATH);
+                        break;
+                    case P:
+                        openFile(OUTPUT_PATH);
+                        break;
+                    case I:
+                        templateHelp();
+                        break;
+                    case Q:
+                        shutdown();
+                        break;
+                    case R:
+                        init();
+                    case E:
+                        home();
+                        break;
+                    case S:
+                        start();
+                        break;
+                    case C:
+                        getTemplateSettings();
+                        break;
+                    default:
+                        System.out.println("- 指令不存在");
+                }
             }
-        } catch (Exception e) {
-            error("指令分析异常");
-            getCmd();
+        } else {
+            System.out.println("- 指令不存在或此处不适用");
         }
     }
 
@@ -177,7 +251,7 @@ public class Main {
                 success("模板目录创建成功");
             } else {
                 error("模板目录创建失败！");
-                shutdown();
+                throw new IOException("模板目录 " + TEMPLATE_DIR_PATH + " 创建失败");
             }
         }
         file = new File(TEMPLATE_PATH);
@@ -189,7 +263,7 @@ public class Main {
                 success("模板文件创建成功");
             } else {
                 error("模板文件创建失败！");
-                shutdown();
+                throw new IOException("模板文件 " + TEMPLATE_PATH + " 创建失败");
             }
         }
         file = new File(OUTPUT_PATH);
@@ -201,7 +275,7 @@ public class Main {
                 success("输出目录创建成功");
             } else {
                 error("输出目录创建失败！");
-                shutdown();
+                throw new IOException("输出目录 " + OUTPUT_PATH + " 创建失败");
             }
         }
         success("文件完整性校验完成");
@@ -225,15 +299,7 @@ public class Main {
         cmdCls();
         printTitle();
         printGuide();
-        while (true) {
-            String s = scanner.nextLine();
-            if (s.equals("s")) {
-                break;
-            } else {
-                analyseCode(s);
-            }
-        }
-        start();
+        getCmd();
     }
 
     /**
@@ -252,19 +318,99 @@ public class Main {
     }
 
     /**
+     * 打开程序前初始化
+     */
+    public static String beforeOpen() {
+        String result = "";
+        cmdCls();
+        try {
+            Controller.writeMessage("正在检查文件完整性");
+            File file = new File(TEMPLATE_DIR_PATH);
+            if (file.exists()) {
+                Controller.writeMessage("模板目录存在");
+            } else {
+                Controller.writeMessage("模板目录缺失，自动创建");
+                if (file.mkdirs()) {
+                    Controller.writeMessage("模板目录创建成功");
+                } else {
+                    Controller.writeMessage("模板目录创建失败！");
+                    result += "模板目录 " + TEMPLATE_DIR_PATH + " 缺失\n";
+                }
+            }
+            file = new File(TEMPLATE_PATH);
+            if (file.exists()) {
+                Controller.writeMessage("模板文件存在");
+            } else {
+                Controller.writeMessage("模板文件缺失，自动创建");
+                if (file.createNewFile()) {
+                    Controller.writeMessage("模板文件创建成功");
+                } else {
+                    Controller.writeMessage("模板文件创建失败！");
+                    result += "模板文件 " + TEMPLATE_PATH + " 缺失\n";
+                }
+            }
+            file = new File(OUTPUT_PATH);
+            if (file.exists()) {
+                Controller.writeMessage("输出目录存在");
+            } else {
+                Controller.writeMessage("输出目录缺失，自动创建");
+                if (file.mkdirs()) {
+                    Controller.writeMessage("输出目录创建成功");
+                } else {
+                    Controller.writeMessage("输出目录创建失败！");
+                    result += "输出目录 " + OUTPUT_PATH + " 缺失\n";
+                }
+            }
+            Controller.writeMessage("文件完整性校验完成");
+            Thread.sleep(500);
+            Controller.hide();
+        } catch (Controller.ConnectionException ignored) {
+            try {
+                Controller.hide();
+            } catch (Controller.ConnectionException ignored2) {
+            }
+        } catch (Exception e) {
+            error("初始化出错，文件完整性校验过程中创建缺失文件失败：" + e);
+            printCommandTips(new CommandEnum[]{R, H});
+            try {
+                Controller.hide();
+            } catch (Controller.ConnectionException ignored) {
+            }
+            getCmd(new CommandEnum[]{E, S, C}, STRATEGY_AVOID);
+        }
+        return result;
+    }
+
+    public static void getTemplateSettings() {
+        try {
+            cmdCls();
+            TemplateObject templateObject = TextUtil.readTemplate(TEMPLATE_PATH);
+            templateObject.printInfo();
+            printCommandTips(new CommandEnum[]{E, H});
+            getCmd();
+        } catch (Exception e) {
+            error("无法读取模板文件，请确认路径：" + TEMPLATE_PATH);
+            error(e.toString());
+            printCommandTip(H);
+            getCmd();
+        }
+    }
+
+    /**
      * 开始执行
      */
-    @SuppressWarnings("InfiniteLoopStatement")
     public static void start() {
         String filePath;
         String templatePath = TEMPLATE_PATH;
-        TemplateObject templateObject;
+        TemplateObject templateObject = new TemplateObject();
         info("正在读取模板文件：" + templatePath);
         try {
             templateObject = TextUtil.readTemplate(templatePath);
         } catch (Exception e) {
             error("无法读取模板文件，请确认路径：" + templatePath);
             error(e.toString());
+            printCommandTip(H);
+            getCmd();
             return;
         }
         if (templateObject.isEmpty()) {
@@ -302,21 +448,23 @@ public class Main {
         } catch (IOException e) {
             error("Excel处理出错：" + e);
         }
-        System.out.println("输入e并按下回车回到主页\n输入q并按下回车退出程序\n输入s并按下回车重新执行程序");
-        while (true) {
-            String s = scanner.nextLine();
-            if (s.equals("s")) {
-                start();
-            } else {
-                analyseCode(s);
-            }
-        }
+        printCommandTips(new CommandEnum[]{E, Q, H, S});
+        getCmd();
     }
 
     public static void main(String[] args) {
         try {
-            init();
-            home();
+            String result = beforeOpen();
+            if (result.isEmpty()) {
+                home();
+            } else  {
+                cmdCls();
+                printTitle();
+                System.out.println("\n文件完整性校验不通过，系统创建文件失败，请手动创建以下文件或下载最新版本应用：\n");
+                System.out.println(result);
+                printCommandTips(new CommandEnum[]{R, Q, H});
+                getCmd(new CommandEnum[]{E, S, C}, STRATEGY_AVOID);
+            }
         } catch (Exception e) {
             error(e.toString());
         }

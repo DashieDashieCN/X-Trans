@@ -1,6 +1,7 @@
 package org.dashie.utils.print;
 
 import org.apache.commons.lang3.StringUtils;
+import org.dashie.common.CommandEnum;
 
 import java.io.IOException;
 import java.sql.Timestamp;
@@ -284,5 +285,17 @@ public class ScreenPrintUtil {
 
     public static void newLine() {
         System.out.println();
+    }
+
+    public static void printCommandTip(CommandEnum command) {
+        System.out.println(StringUtils.repeat("_", 50));
+        System.out.println(getFixedLengthString(command.getCode(), 5, ALIGN_RIGHT) + "    " + command.getSimpleDesc());
+    }
+
+    public static void printCommandTips(CommandEnum[] enums) {
+        System.out.println(StringUtils.repeat("_", 50));
+        for (CommandEnum command : enums) {
+            System.out.println(getFixedLengthString(command.getCode(), 5, ALIGN_RIGHT) + "    " + command.getSimpleDesc());
+        }
     }
 }

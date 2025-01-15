@@ -122,7 +122,7 @@ public class ExcelUtil {
                 } catch (Exception ignored) {
                 }
 
-                info("读取Excel中...");
+                info("读取Excel中...", PRINT_STYLE_HIDE_DATE);
                 printProgressBar(25, (double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
                 BigDecimal bigDecimal = new BigDecimal((double) (rowIndex - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep() / steps);
                 printFixedLengthString(bigDecimal.setScale(2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)) + "%", 25, ALIGN_RIGHT);

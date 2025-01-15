@@ -13,6 +13,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static org.dashie.common.TemplateObjectCommon.*;
+import static org.dashie.utils.print.ScreenPrintUtil.newLine;
 
 /**
  * @author DashieDasie
@@ -111,5 +112,17 @@ public class TemplateObject {
 
     public boolean isEmpty() {
         return loopTemplate.isEmpty() && preText.isEmpty() && sufText.isEmpty();
+    }
+
+    public void printInfo() {
+        newLine();
+        boolean noInputFileName = inputFilePath == null || inputFilePath.isEmpty();
+        System.out.println("            起始行号  " + startRowIndex);
+        System.out.println("          行读取步长  " + rowStep);
+        System.out.println("        输入文件路径  " + (noInputFileName ? "*未配置" : inputFilePath));
+        System.out.println("  （解析前）输出文件名  " + outputFileName);
+        if (!noInputFileName) {
+            System.out.println("  （解析后）输出文件名  " + getFilledOutputFileName());
+        }
     }
 }
