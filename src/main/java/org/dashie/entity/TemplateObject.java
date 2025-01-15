@@ -119,7 +119,7 @@ public class TemplateObject {
         boolean noInputFileName = inputFilePath == null || inputFilePath.isEmpty();
         System.out.println("            起始行号  " + startRowIndex);
         System.out.println("          行读取步长  " + rowStep);
-        System.out.println("        输入文件路径  " + (noInputFileName ? "*未配置" : inputFilePath));
+        System.out.println("        输入文件路径  " + (noInputFileName ? "*未配置或配置有误" : inputFilePath));
         System.out.println("  （解析前）输出文件名  " + outputFileName);
         if (!noInputFileName) {
             System.out.println("  （解析后）输出文件名  " + getFilledOutputFileName());

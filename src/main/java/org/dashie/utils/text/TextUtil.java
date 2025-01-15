@@ -50,6 +50,9 @@ public class TextUtil {
                         templateObject.setInputFilePath(value);
                         try {
                             File excel = new File(value);
+                            if (!excel.exists()) {
+                                throw new Exception();
+                            }
                             templateObject.setFileName(excel.getName().substring(0, excel.getName().lastIndexOf('.')));
                         } catch (Exception e) {
                             error("无法根据路径查找到对应Excel文件，需用户手动输入");
