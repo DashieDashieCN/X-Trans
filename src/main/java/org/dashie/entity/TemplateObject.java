@@ -168,15 +168,15 @@ public class TemplateObject {
         System.out.println("          循环部分换行 | " + getBooleanCnValue(loopLineBreak));
         System.out.println("        循环部分分隔符 | " + (separator.isEmpty() ? "*未配置" : separator));
         if (!separator.isEmpty() && separator.matches(".*( )+")) {
-            System.out.println("        └─空格可视化 | " + separator.replaceAll(" ", "□"));
+            System.out.println("          └─空格可视化 | " + separator.replaceAll(" ", "□"));
         }
         System.out.println("  循环部分去除多余前缀 | " + (prefixOverrides.isEmpty() ? "*未配置" : prefixOverrides));
         if (!prefixOverrides.isEmpty() && prefixOverrides.matches(".*( )+")) {
-            System.out.println("        └─空格可视化 | " + prefixOverrides.replaceAll(" ", "□"));
+            System.out.println("          └─空格可视化 | " + prefixOverrides.replaceAll(" ", "□"));
         }
         System.out.println("  循环部分去除多余后缀 | " + (suffixOverrides.isEmpty() ? "*未配置" : suffixOverrides));
         if (!suffixOverrides.isEmpty() && suffixOverrides.matches(".*( )+")) {
-            System.out.println("        └─空格可视化 | " + suffixOverrides.replaceAll(" ", "□"));
+            System.out.println("          └─空格可视化 | " + suffixOverrides.replaceAll(" ", "□"));
         }
     }
     
