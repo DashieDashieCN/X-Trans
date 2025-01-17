@@ -28,7 +28,7 @@ import static org.dashie.utils.print.ScreenPrintUtil.*;
  * @since 2025/1/14 9:34
  */
 public class Main {
-    public static final String VERSION = "V1.4.5";
+    public static final String VERSION = "V1.5.0";
 
     public static final Scanner scanner = new Scanner(System.in, "GBK");
 
@@ -104,6 +104,24 @@ public class Main {
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：字符串；非必填，默认值：{}.txt");
         System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "Excel转换后的输出文件名，文件名+后缀名，可使用特殊关键字");
         System.out.println("         关键字 {} 复用Excel文件名（不包含后缀名）");
+        System.out.println(getFixedLengthString("1.5 ", 5, ALIGN_RIGHT) + "上文末尾换行 lineBreakPre=0/1/false/true");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：布尔值（是-1/true，否-0/false）；非必填，默认值：是");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "上文和循环部分之间是否换行");
+        System.out.println(getFixedLengthString("1.6 ", 5, ALIGN_RIGHT) + "下文开头换行 lineBreakSuf=0/1/false/true");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：布尔值（是-1/true，否-0/false）；非必填，默认值：是");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "下文和循环部分之间是否换行");
+        System.out.println(getFixedLengthString("1.7 ", 5, ALIGN_RIGHT) + "循环部分换行 lineBreakLoop=0/1/false/true");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：布尔值（是-1/true，否-0/false）；非必填，默认值：是");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "相邻循环部分之间是否换行");
+        System.out.println(getFixedLengthString("1.8 ", 5, ALIGN_RIGHT) + "循环部分分隔符 separator=XXX");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：字符串；非必填");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "相邻循环部分之间添加的分隔符，换行时默认添加于行末");
+        System.out.println(getFixedLengthString("1.9 ", 5, ALIGN_RIGHT) + "循环部分去除多余前缀 prefixOverrides=XXX");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：字符串；非必填");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "去除循环部分中第一次循环的前缀，需要和实际文本一致，不一致时不进行处理");
+        System.out.println(getFixedLengthString("1.10 ", 5, ALIGN_RIGHT) + "循环部分去除多余后缀 suffixOverrides=XXX");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "类型：字符串；非必填");
+        System.out.println(getFixedLengthString(" ", 5, ALIGN_RIGHT) + "去除循环部分中最后一次循环的后缀，需要和实际文本一致，不一致时不进行处理");
         System.out.println(getFixedLengthString("2. ", 5, ALIGN_RIGHT) + "上文设置");
         System.out.println(getFixedLengthString("", 5, ALIGN_RIGHT) + "类型：字符串（可多行）；选填；在读取Excel数据并转换为文本之前写入的文本");
         System.out.println(getFixedLengthString("3. ", 5, ALIGN_RIGHT) + "循环模板设置");

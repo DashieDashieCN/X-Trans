@@ -41,7 +41,9 @@ public class ExcelUtil {
             Workbook workbook = is2003Excel ? new HSSFWorkbook(file) : new XSSFWorkbook(file);
             Sheet sheet = workbook.getSheetAt(0);
             int totalRows = sheet.getLastRowNum();
-            info("共" + totalRows + 1 + "行");
+            info("共" + (totalRows + 1) + "行");
+            info("从行" + templateObject.getStartRowIndex() + "开始读取，步长" + templateObject.getRowStep());
+            info("共" + ((totalRows - templateObject.getStartRowIndex()) / templateObject.getRowStep() + 1) + "步");
             BufferedWriter bufferedWriter = getWriter(templateObject);
             info("正在写入上文");
             if (!templateObject.getPreText().isEmpty()) {
@@ -52,7 +54,7 @@ public class ExcelUtil {
             SheetListener sheetListener = new SheetListener(
                     templateObject,
                     bufferedWriter,
-                    (totalRows - templateObject.getStartRowIndex() - 1) / templateObject.getRowStep() + 1
+                    (totalRows - templateObject.getStartRowIndex()) / templateObject.getRowStep() + 1
             );
             EasyExcel.read(path, sheetListener).sheet().doRead();
             info("正在写入下文");
