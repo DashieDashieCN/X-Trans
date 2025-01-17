@@ -39,17 +39,18 @@ public class TemplateObject {
     private String outputFileName;
     // 输入文件路径
     private String inputFilePath;
-
-    TemplateObject(Integer startRowIndex, Integer rowStep, String preText, String sufText, String loopTemplate, String fileName, String outputFileName, String inputFilePath) {
-        this.startRowIndex = (startRowIndex == null || startRowIndex < 0) ? DEFAULT_START_ROW_INDEX : startRowIndex;
-        this.rowStep = (rowStep == null || rowStep < 1) ? DEFAULT_ROW_STEP : rowStep;
-        this.preText = preText == null ? DEFAULT_PRE_TEXT : preText;
-        this.sufText = sufText == null ? DEFAULT_SUF_TEXT : sufText;
-        this.loopTemplate = loopTemplate == null ? DEFAULT_LOOP_TEMPLATE : loopTemplate;
-        this.fileName = (fileName == null || fileName.isEmpty()) ? DEFAULT_FILE_NAME : fileName;
-        this.outputFileName = (outputFileName == null || outputFileName.isEmpty()) ? DEFAULT_OUTPUT_FILE_NAME : outputFileName;
-        this.inputFilePath = inputFilePath;
-    }
+    // 上文末尾是否换行，默认true
+    private Boolean preTextLineBreak;
+    // 下文开头是否换行，默认true
+    private Boolean sufTextLineBreak;
+    // 循环部分是否换行，默认true
+    private Boolean loopLineBreak;
+    // 循环部分分隔符
+    private String separator;
+    // 循环部分去除首行前缀
+    private String prefixOverrides;
+    // 循环部分去除最后一行后缀
+    private String suffixOverrides;
 
     public TemplateObject checkAndFix() {
         if (startRowIndex == null || startRowIndex < 0) {
@@ -72,6 +73,24 @@ public class TemplateObject {
         }
         if (outputFileName == null || outputFileName.isEmpty()) {
             outputFileName = DEFAULT_OUTPUT_FILE_NAME;
+        }
+        if (preTextLineBreak == null) {
+            preTextLineBreak = true;
+        }
+        if (sufTextLineBreak == null) {
+            sufTextLineBreak = true;
+        }
+        if (loopLineBreak == null) {
+            loopLineBreak = true;
+        }
+        if (separator == null) {
+            separator = "";
+        }
+        if (prefixOverrides == null) {
+            prefixOverrides = "";
+        }
+        if (suffixOverrides == null) {
+            suffixOverrides = "";
         }
         return this;
     }
@@ -114,15 +133,67 @@ public class TemplateObject {
         return loopTemplate.isEmpty() && preText.isEmpty() && sufText.isEmpty();
     }
 
+    private String getBooleanCnValue(boolean flag) {
+        return flag ? "是" : "否";
+    }
+
+    public static Boolean string2Boolean(String s) {
+        switch (s) {
+            case "1":
+                return true;
+            case "0":
+                return false;
+        }
+        if (s.equalsIgnoreCase("true")) {
+            return true;
+        }
+        if (s.equalsIgnoreCase("false")) {
+            return false;
+        }
+        return null;
+    }
+
     public void printInfo() {
         newLine();
         boolean noInputFileName = inputFilePath == null || inputFilePath.isEmpty();
-        System.out.println("              起始行号  " + startRowIndex);
-        System.out.println("            行读取步长  " + rowStep);
-        System.out.println("          输入文件路径  " + (noInputFileName ? "*未配置或配置有误" : inputFilePath));
-        System.out.println("  （解析前）输出文件名  " + outputFileName);
+        System.out.println("              起始行号 | " + startRowIndex);
+        System.out.println("            行读取步长 | " + rowStep);
+        System.out.println("          输入文件路径 | " + (noInputFileName ? "*未配置或配置有误" : inputFilePath));
+        System.out.println("  （解析前）输出文件名 | " + outputFileName);
         if (!noInputFileName) {
-            System.out.println("  （解析后）输出文件名  " + getFilledOutputFileName());
+            System.out.println("  （解析后）输出文件名 | " + getFilledOutputFileName());
         }
+        System.out.println("          上文末尾换行 | " + getBooleanCnValue(preTextLineBreak));
+        System.out.println("          下文开头换行 | " + getBooleanCnValue(sufTextLineBreak));
+        System.out.println("          循环部分换行 | " + getBooleanCnValue(loopLineBreak));
+        System.out.println("        循环部分分隔符 | " + (separator.isEmpty() ? "*未配置" : separator));
+        System.out.println("  循环部分去除多余前缀 | " + (prefixOverrides.isEmpty() ? "*未配置" : prefixOverrides));
+        System.out.println("  循环部分去除多余后缀 | " + (suffixOverrides.isEmpty() ? "*未配置" : suffixOverrides));
+    }
+    
+    public static String removePrefix(String s, TemplateObject templateObject) {
+        String prefixOverrides = templateObject.getPrefixOverrides();
+        if (!prefixOverrides.isEmpty() && s.length() >= prefixOverrides.length()) {
+            String prefix = s.substring(0, prefixOverrides.length());
+            if (prefix.equals(prefixOverrides)) {
+                return s.substring(prefixOverrides.length());
+            }
+        }
+        return s;
+    }
+    
+    public static String removeSuffix(String s, TemplateObject templateObject) {
+        String suffixOverrides = templateObject.getSuffixOverrides();
+        if (!suffixOverrides.isEmpty() && s.length() >= suffixOverrides.length()) {
+            String suffix = s.substring(s.length() - suffixOverrides.length());
+            if (suffix.equals(suffixOverrides)) {
+                return s.substring(0, s.length() - suffixOverrides.length());
+            }
+        }
+        return s;
+    }
+
+    public static String removeAffix(String s, TemplateObject templateObject) {
+        return removeSuffix(removePrefix(s, templateObject), templateObject);
     }
 }

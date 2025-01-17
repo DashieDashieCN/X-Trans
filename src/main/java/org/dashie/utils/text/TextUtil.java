@@ -5,6 +5,7 @@ import org.dashie.entity.TemplateObject;
 import java.io.*;
 
 import static org.dashie.common.FileCommon.*;
+import static org.dashie.entity.TemplateObject.string2Boolean;
 import static org.dashie.utils.print.ScreenPrintUtil.*;
 
 /**
@@ -58,6 +59,45 @@ public class TextUtil {
                             error("无法根据路径查找到对应Excel文件，需用户手动输入");
                             templateObject.setInputFilePath(null);
                         }
+                        break;
+                    case KEY_PRE_TEXT_LINE_BREAK:
+                        info("读取模板配置：上文末尾换行=" + value);
+                        Boolean flag = string2Boolean(value);
+                        if (flag == null) {
+                            error("上文末尾换行对应值非法，使用默认值");
+                        } else {
+                            templateObject.setPreTextLineBreak(flag);
+                        }
+                        break;
+                    case KEY_SUF_TEXT_LINE_BREAK:
+                        info("读取模板配置：下文开头换行=" + value);
+                        Boolean flag1 = string2Boolean(value);
+                        if (flag1 == null) {
+                            error("下文开头换行对应值非法，使用默认值");
+                        } else {
+                            templateObject.setSufTextLineBreak(flag1);
+                        }
+                        break;
+                    case KEY_LOOP_LINE_BREAK:
+                        info("读取模板配置：循环部分换行=" + value);
+                        Boolean flag2 = string2Boolean(value);
+                        if (flag2 == null) {
+                            error("循环部分换行对应值非法，使用默认值");
+                        } else {
+                            templateObject.setLoopLineBreak(flag2);
+                        }
+                        break;
+                    case KEY_SEPARATOR:
+                        info("读取模板配置：循环部分分隔符=" + value);
+                        templateObject.setSeparator(value);
+                        break;
+                    case KEY_PREFIX_OVERRIDES:
+                        info("读取模板配置：循环部分去除多余前缀=" + value);
+                        templateObject.setPrefixOverrides(value);
+                        break;
+                    case KEY_SUFFIX_OVERRIDES:
+                        info("读取模板配置：循环部分去除多余后缀=" + value);
+                        templateObject.setSuffixOverrides(value);
                         break;
                     default:
                         warn("未知配置，结束读取模板配置：" + line);

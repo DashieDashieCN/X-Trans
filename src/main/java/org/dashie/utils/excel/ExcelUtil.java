@@ -26,6 +26,7 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import static org.dashie.common.FileCommon.OUTPUT_PATH;
+import static org.dashie.entity.TemplateObject.*;
 import static org.dashie.utils.print.ScreenPrintUtil.*;
 import static org.dashie.utils.text.TextUtil.getWriter;
 
@@ -51,12 +52,12 @@ public class ExcelUtil {
             SheetListener sheetListener = new SheetListener(
                     templateObject,
                     bufferedWriter,
-                    (totalRows - templateObject.getStartRowIndex() + 1) / templateObject.getRowStep()
+                    (totalRows - templateObject.getStartRowIndex() - 1) / templateObject.getRowStep() + 1
             );
             EasyExcel.read(path, sheetListener).sheet().doRead();
             info("正在写入下文");
             if (!templateObject.getSufText().isEmpty()) {
-                if (!templateObject.getPreText().isEmpty() || !templateObject.getLoopTemplate().isEmpty()) {
+                if ((!templateObject.getPreText().isEmpty() || !templateObject.getLoopTemplate().isEmpty()) && templateObject.getSufTextLineBreak()) {
                     bufferedWriter.newLine();
                 }
                 bufferedWriter.write(templateObject.getSufText());
@@ -128,11 +129,36 @@ public class ExcelUtil {
                 printFixedLengthString(bigDecimal.setScale(2, RoundingMode.HALF_UP).multiply(new BigDecimal(100)) + "%", 25, ALIGN_RIGHT);
             }
             if (!templateObject.getLoopTemplate().isEmpty()) {
+                String line = templateObject.getFilledLoopTemplate(data);
                 try {
-                    if (!templateObject.getPreText().isEmpty() || rowIndex != templateObject.getStartRowIndex()) {
-                        bufferedWriter.newLine();
+                    if (steps == 1) {
+                        // 首尾同行处理
+                        if (!templateObject.getPreText().isEmpty() && templateObject.getPreTextLineBreak()) {
+                            bufferedWriter.newLine();
+                        }
+                        bufferedWriter.write(removeAffix(line, templateObject));
+                    } else {
+                        if (rowIndex == templateObject.getStartRowIndex()) {
+                            // 首行处理
+                            if (!templateObject.getPreText().isEmpty() && templateObject.getPreTextLineBreak()) {
+                                bufferedWriter.newLine();
+                            }
+                            bufferedWriter.write(removePrefix(line, templateObject) + templateObject.getSeparator());
+                        } else if (rowIndex == templateObject.getStartRowIndex() + (steps - 1) * templateObject.getRowStep()) {
+                            // 尾行处理
+                            if (templateObject.getLoopLineBreak()) {
+                                bufferedWriter.newLine();
+                            }
+                            bufferedWriter.write(removeSuffix(line, templateObject));
+                        } else {
+                            // 非首尾行处理
+                            if (templateObject.getLoopLineBreak()) {
+                                bufferedWriter.newLine();
+                            }
+                            bufferedWriter.write(line + templateObject.getSeparator());
+                        }
                     }
-                    bufferedWriter.write(templateObject.getFilledLoopTemplate(data));
+
                     if (updateFlag) {
                         success("写入成功", PRINT_STYLE_HIDE_DATE);
                     }
