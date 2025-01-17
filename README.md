@@ -36,18 +36,26 @@ X-Trans的使用流程基本如下：
 
 可配置参数如下：
 
-| 键               | 键中文名   | 值类型  | 取值要求                 | 必填 | 默认值   | 功能                                            | 备注                   | 样例                         |
-| ---------------- | ---------- | ------- | ------------------------ | ---- | -------- | ----------------------------------------------- | ---------------------- | ---------------------------- |
-| `startRowIndex`  | 起始行号   | Integer | 大于等于0的整数          | 否   | `1`      | 限制Excel读取数据时的起始行号                   | 行号自0开始计数        | startRowIndex=2              |
-| `rowStep`        | 行读取步长 | Integer | 大于等于1的整数          | 否   | `1`      | Excel读取数据时下一读取行到当前读取行之间的步长 |                        | rowStep=2                    |
-| `path`           | Excel路径  | String  | 文件夹路径+文件名+后缀名 | 否   | `""`     | 读取的Excel路径                                 | 缺失时需要用户手动输入 | path=D:files\表格.xlsx       |
-| `outputFileName` | 输出文件名 | String  | 文件名+后缀名            | 否   | `{}.txt` | Excel转换后的输出文件名                         | 可使用特殊关键字       | outputFileName={}_转换后.txt |
+| 键                | 键中文名             | 值类型  | 取值要求                           | 必填 | 默认值   | 功能                                            | 备注                                                         | 样例                          |
+| ----------------- | -------------------- | ------- | ---------------------------------- | ---- | -------- | ----------------------------------------------- | ------------------------------------------------------------ | ----------------------------- |
+| `startRowIndex`   | 起始行号             | Integer | 大于等于0的整数                    | 否   | `1`      | 限制Excel读取数据时的起始行号                   | 行号自0开始计数                                              | startRowIndex=2               |
+| `rowStep`         | 行读取步长           | Integer | 大于等于1的整数                    | 否   | `1`      | Excel读取数据时下一读取行到当前读取行之间的步长 |                                                              | rowStep=2                     |
+| `path`            | Excel路径            | String  | 文件夹路径+文件名+后缀名           | 否   | `""`     | 读取的Excel路径                                 | 缺失时需要用户手动输入                                       | path=D:files\表格.xlsx        |
+| `outputFileName`  | 输出文件名           | String  | 文件名+后缀名                      | 否   | `{}.txt` | Excel转换后的输出文件名                         | 可使用特殊关键字                                             | outputFileName={}\_转换后.txt |
+| `lineBreakPre`    | 上文末尾换行         | Boolean | 是：`1`/`true`<br/>否：`0`/`false` | 否   | `true`   | 上文和循环部分之间是否换行                      | <span style="background-color: MediumSeaGreen; color: white; padding: 5px; border-radius: 20px; font-size: 14px">V1.5.0</span > | lineBreakPre=1                |
+| `lineBreakSuf`    | 下文开头换行         | Boolean | 是：`1`/`true`<br/>否：`0`/`false` | 否   | `true`   | 下文和循环部分之间是否换行                      | <span style="background-color: MediumSeaGreen; color: white; padding: 5px; border-radius: 20px; font-size: 14px">V1.5.0</span > | lineBreakSuf=1                |
+| `lineBreakLoop`   | 循环部分换行         | Boolean | 是：`1`/`true`<br/>否：`0`/`false` | 否   | `true`   | 相邻循环部分之间是否换行                        | <span style="background-color: MediumSeaGreen; color: white; padding: 5px; border-radius: 20px; font-size: 14px">V1.5.0</span ><br/>只有一次循环时不处理 | lineBreakLoop=1               |
+| `separator`       | 循环部分分隔符       | String  | 文件名+后缀名                      | 否   | `""`     | 相邻循环部分之间添加的分隔符                    | <span style="background-color: MediumSeaGreen; color: white; padding: 5px; border-radius: 20px; font-size: 14px">V1.5.0</span ><br/>换行时默认添加于行末，只有一次循环时不处理 | separator=,                   |
+| `prefixOverrides` | 循环部分去除多余前缀 | String  | 文件名+后缀名                      | 否   | `""`     | 去除循环部分中第一次循环的前缀                  | <span style="background-color: MediumSeaGreen; color: white; padding: 5px; border-radius: 20px; font-size: 14px">V1.5.0</span ><br/>需要和实际文本一致，不一致时不进行处理 | prefixOverrides=##            |
+| `suffixOverrides` | 循环部分去除多余后缀 | String  | 文件名+后缀名                      | 否   | `""`     | 去除循环部分中最后一次循环的后缀                | <span style="background-color: MediumSeaGreen; color: white; padding: 5px; border-radius: 20px; font-size: 14px">V1.5.0</span ><br/>需要和实际文本一致，不一致时不进行处理 | suffixOverrides=##            |
 
 ##### 特殊关键字
 
 | 关键字 | 作用域           | 功能                                              | 样例                                                         |
 | ------ | ---------------- | ------------------------------------------------- | ------------------------------------------------------------ |
 | `{}`   | `outputFileName` | 替换后为程序所读取的Excel的文件名（不包含后缀名） | Excel文件名为：`表格.xlsx`<br/>`outputFileName`设置为`{}_转换后.txt`<br/>最终输出文件名为：`表格_转换后.txt` |
+
+
 
 #### 上文设置
 
@@ -127,16 +135,16 @@ path=C:\Users\华硕\Desktop\file\工作簿1.xlsx
 
 通常的操作为输入字符后回车执行指令。个别非通用的特殊指令操作会在命令行中有明确提示。
 
-| 指令 | 功能                                   |
-| ---- | -------------------------------------- |
-| `h`  | 查看指令帮助                           |
-| `o`  | 打开模板文件（template.txt）所在文件夹 |
-| `f`  | 打开模板文件（template.txt）           |
-| `p`  | 打开输出文件夹                         |
-| `i`  | 查看模板配置说明                       |
-| `q`  | 退出程序                               |
-| `r`  | 重启程序                               |
-| `e`  | 返回主页                               |
+| 指令 | 功能                                             |
+| ---- | ------------------------------------------------ |
+| `h`  | 查看指令帮助                                     |
+| `o`  | 打开模板文件（template.txt）所在文件夹           |
+| `f`  | 打开模板文件（template.txt）                     |
+| `p`  | 打开输出文件夹                                   |
+| `i`  | 查看模板配置说明                                 |
+| `q`  | 退出程序                                         |
+| `r`  | 重启程序                                         |
+| `e`  | 返回主页（成功初始化后允许使用）                 |
 | `s`  | 开始执行转换（成功初始化后允许使用）             |
 | `c`  | 查看当前模板中的配置信息（成功初始化后允许使用） |
 
