@@ -81,6 +81,8 @@ X-Trans的使用流程基本如下：
 
 #### 配置样例
 
+##### V1.5 之前的版本
+
 ````xml
 startRowIndex=1
 outputFileName={}.ctd
@@ -127,6 +129,32 @@ path=C:\Users\华硕\Desktop\file\工作簿1.xlsx
 			<c>${33}$</c>
 		</data>
 ```
+	</datas>
+</files>
+````
+
+##### V1.5.*
+
+V1.5.0版本新增了若干模板参数，可参考以下样例：
+
+````xml
+startRowIndex=1
+outputFileName={}.ctd
+path=C:\Users\华硕\Desktop\file\工作簿1.xlsx
+lineBreakPre=0
+lineBreakSuf=0
+lineBreakLoop=false
+separator=,
+prefixOverrides=   
+suffixOverrides=!
+<?xml version="1.0" encoding="UTF-8"?>
+<files>
+	<datas>
+{
+```
+    "data": [${30}$, ${31}$]!!!
+```
+}
 	</datas>
 </files>
 ````
